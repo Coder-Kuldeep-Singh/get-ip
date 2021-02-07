@@ -2,13 +2,14 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 )
 
 // IP helps to generate the json data
 type IP struct {
-	ip string `json:"ip"`
+	Ip string `json:"ip"`
 }
 
 func formatter(req *http.Request) {
@@ -18,8 +19,10 @@ func formatter(req *http.Request) {
 // GetIP returns the ip of the user
 func GetIP(res http.ResponseWriter, req *http.Request) {
 	formatter(req)
-	ip := getIPAdress(req)
-	found := IP{ip: ip}
+	// ip := getIPAdress(req)
+	// log.Println("one", ip)
+	// log.Println(req.RemoteAddr)
+	found := IP{Ip: req.RemoteAddr}
 	res.Header().Set("Content-Type", "application/json")
 	build, err := json.Marshal(found)
 	if err != nil {
@@ -27,5 +30,6 @@ func GetIP(res http.ResponseWriter, req *http.Request) {
 		res.Write([]byte("error:Internal Error"))
 		return
 	}
-	res.Write(build)
+	// res.Write(build)
+	fmt.Fprintf(res, "%v", string(build))
 }
